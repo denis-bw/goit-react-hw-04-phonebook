@@ -11,7 +11,7 @@ export function ContactForm({handleSubmitForm}) {
     e.preventDefault();
     const { name, number } = e.currentTarget;
     
-    handleSubmitForm(name,number)
+    handleSubmitForm(nameUser, numberUser)
 
     resetState()
       name.value = "";

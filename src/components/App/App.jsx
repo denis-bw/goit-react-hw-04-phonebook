@@ -18,13 +18,13 @@ export function App () {
   
   const handleSubmitForm = (contactName, contactsNumber) => {
 
-    const equalName = contacts.find(contact => contactName.value.toUpperCase() === contact.name.toUpperCase()) 
+    const equalName = contacts.find(contact => contactName.toUpperCase() === contact.name.toUpperCase()) 
     if (equalName) return alert(`${equalName.name} is already in contacts`);
 
-    const equalNumber = contacts.find(contact => contactsNumber.value === contact.number) 
+    const equalNumber = contacts.find(contact => contactsNumber === contact.number) 
     if (equalNumber) return alert(`${equalNumber.number} is already in contacts`);
 
-    const contact = { id: nanoid(), name: contactName.value, number: contactsNumber.value };
+    const contact = { id: nanoid(), name: contactName, number: contactsNumber};
 
     setContacts(prevState => {
       return  [...prevState, contact] ;
@@ -36,7 +36,8 @@ export function App () {
   }
 
   const filterOnName = () => {
-      const normalizedFilter = filter.toUpperCase();
+    const normalizedFilter = filter.toUpperCase();
+    // console.log(contacts)
       return contacts.filter(constact => constact.name.toUpperCase().includes(normalizedFilter))
   }
 
