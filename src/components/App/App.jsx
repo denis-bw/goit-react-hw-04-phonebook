@@ -8,7 +8,6 @@ import css from './App.module.css'
 
 export function App () {
 
-
   const [contacts, setContacts] = useState(JSON.parse(window.localStorage.getItem("constactList")) ?? [])
   const [filter, setFilter] = useState('')
 
