@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import  { useState, useEffect } from "react";
 import { nanoid } from "nanoid";
 import { ContactForm } from '../ContactForm/ContactForm'
 import {ContactList} from '../ContactList/ContactList'
@@ -6,68 +6,56 @@ import { Filter } from '../Filter/Filter'
 import css from './App.module.css'
 
 
-export class App extends Component  {
-  state = {
-    contacts: [],
-    filter: '',
-  } 
+export function App () {
 
 
-  componentDidMount() {
-    const contactList = localStorage.getItem("constactList");  
-    if (contactList) {
-      this.setState(
-        {contacts: JSON.parse(contactList)}
-      )
-    }
-  }
+  const [contacts, setContacts] = useState(JSON.parse(window.localStorage.getItem("constactList")) ?? [])
+  const [filter, setFilter] = useState('')
 
-  componentDidUpdate(prevProps, prevState) {
-    if (this.state.contacts !== prevState.constacts) {
-      localStorage.setItem("constactList", JSON.stringify(this.state.contacts))
-    }
-  }
+  useEffect(() => {
+    window.localStorage.setItem("constactList", JSON.stringify(contacts))
+  },[contacts])
+  
+  const handleSubmitForm = (contactName, contactsNumber) => {
 
-  handleSubmitForm = (contactName, contactsNumber) => {
-
-    const equalName = this.state.contacts.find(contact => contactName.value.toUpperCase() === contact.name.toUpperCase()) 
+    const equalName = contacts.find(contact => contactName.value.toUpperCase() === contact.name.toUpperCase()) 
     if (equalName) return alert(`${equalName.name} is already in contacts`);
 
-    const equalNumber = this.state.contacts.find(contact => contactsNumber.value === contact.number) 
+    const equalNumber = contacts.find(contact => contactsNumber.value === contact.number) 
     if (equalNumber) return alert(`${equalNumber.number} is already in contacts`);
 
     const contact = { id: nanoid(), name: contactName.value, number: contactsNumber.value };
 
-    this.setState((state) => {
-      return { contacts: [...state.contacts, contact] };
+    setContacts(prevState => {
+      return  [...prevState, contact] ;
     })
   }
 
-  filterListAddState = e => {
-    this.setState({ filter: e.currentTarget.value })
+  const filterListAddState = e => {
+    setFilter( e.currentTarget.value )
   }
 
-  filterOnName = () => {
-      const normalizedFilter = this.state.filter.toUpperCase();
-      return this.state.contacts.filter(constact => constact.name.toUpperCase().includes(normalizedFilter))
+  const filterOnName = () => {
+      const normalizedFilter = filter.toUpperCase();
+      return contacts.filter(constact => constact.name.toUpperCase().includes(normalizedFilter))
   }
 
-  deleteContact = id => {
-    const positiveValues = this.state.contacts.filter(el => el.id !== id);
-    this.setState({ contacts: positiveValues })
+  const deleteContact = id => {
+    const positiveValues = contacts.filter(el => el.id !== id);
+    setContacts(positiveValues)
   }
 
-  render() {
+  
     return (  
       <div className={css.container}>
         <h1 className={css.title}>Phonebook</h1>
 
-        <ContactForm handleSubmitForm={this.handleSubmitForm} />
+        <ContactForm handleSubmitForm={handleSubmitForm} />
         
         <h2 className={css.title}>Contacts</h2>
 
-        <Filter filterListAddState={this.filterListAddState} />
-        <ContactList visibleContact={this.filterOnName()} deleteContact={this.deleteContact} />
+        <Filter filterListAddState={filterListAddState} />
+        <ContactList visibleContact={filterOnName()} deleteContact={deleteContact} />
       </div>
-    )}
+    )
 };
